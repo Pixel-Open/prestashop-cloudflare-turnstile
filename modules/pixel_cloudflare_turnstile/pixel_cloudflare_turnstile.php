@@ -60,11 +60,13 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         $this->templateFile = 'module:' . $this->name . '/pixel_cloudflare_turnstile.tpl';
     }
 
-    /****************************/
+    /***************************/
     /** MODULE INITIALIZATION **/
     /***************************/
 
     /**
+     * Install the module
+     *
      * @return bool
      */
     public function install(): bool
@@ -76,6 +78,8 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     }
 
     /**
+     * Uninstall the module
+     *
      * @return bool
      */
     public function uninstall(): bool
@@ -98,11 +102,11 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     /***********/
 
     /**
-     * Add JS
+     * Adds CSS and JS
      *
      * @return void
      */
-    public function hookActionFrontControllerSetMedia()
+    public function hookActionFrontControllerSetMedia(): void
     {
         $this->context->controller->registerStylesheet(
             'cloudflare-turnstile',
@@ -125,7 +129,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     }
 
     /**
-     * Adds turnstile to the create account form
+     * Display turnstile widget on the create account form
      *
      * @return string
      */
@@ -150,8 +154,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      */
     public function hookActionFrontControllerInitBefore(array $params): void
     {
-        $cookie = Context::getContext()->cookie;
-
         if (!$this->canProcess(get_class($params['controller']))) {
             return;
         }
@@ -173,6 +175,8 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             return;
         }
 
+        $cookie = Context::getContext()->cookie;
+
         if ($cookie->__get(self::TURNSTILE_SESSION_ERROR_KEY)) {
             $this->context->controller->errors[] = $this->trans(
                 $cookie->__get(self::TURNSTILE_SESSION_ERROR_KEY),
@@ -188,6 +192,8 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     }
 
     /**
+     * Check if turnstile is available for current action
+     *
      * @param string $controllerClass
      * @param bool   $validate
      *
@@ -245,9 +251,10 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     }
 
     /**
-     * Is turnstile available for the form?
+     * Check if turnstile is available for the form
      *
      * @param string $form
+     *
      * @return bool
      */
     protected function isAvailable(string $form): bool
@@ -295,16 +302,43 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         $result = json_decode(curl_exec($ch), true);
 
         if (!($result['success'] ?? false)) {
+            $errors = $result['error-codes'] ?? ['unavailable'];
+            foreach ($errors as $key => $errorCode) {
+                $errors[$key] = $this->getErrorMessage($errorCode);
+            }
             $cookie->__set(
                 self::TURNSTILE_SESSION_ERROR_KEY,
                 $this->trans(
                     'Security validation error:',
                     [],
                     'Modules.Pixelcloudflareturnstile.Shop'
-                ) . ' ' . join(', ', $result['error-codes'] ?? ['verification-unavailable'])
+                ) . ' ' . join(', ', $errors)
             );
             Tools::redirect($referer);
         }
+    }
+
+    /**
+     * Retrieve error message from error code
+     *
+     * @param string $code
+     *
+     * @return string
+     */
+    protected function getErrorMessage(string $code): string
+    {
+        $messages = [
+            'missing-input-secret'   => 'the secret parameter was not passed.',
+            'invalid-input-secret'   => 'the secret parameter was invalid or did not exist.',
+            'missing-input-response' => 'the response parameter was not passed.',
+            'invalid-input-response' => 'the response parameter is invalid or has expired.',
+            'bad-request'            => 'the request was rejected because it was malformed.',
+            'timeout-or-duplicate'   => 'the response parameter has already been validated before.',
+            'internal-error'         => 'an internal error happened while validating the response. The request can be retried.',
+            'unavailable'            => 'unable to contact Cloudflare to validate the form',
+        ];
+
+        return $messages[$code] ?? 'unknown error';
     }
 
     /*********************/
@@ -312,6 +346,8 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     /*********************/
 
     /**
+     * Render the turnstile widget
+     *
      * @param string $hookName
      * @param string[] $configuration
      *
@@ -319,10 +355,11 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      */
     public function renderWidget($hookName, array $configuration): string
     {
-        if (!$this->canProcess(get_class($this->context->controller))) {
+        $className = get_class($this->context->controller);
+        if (!$this->canProcess($className)) {
             return '';
         }
-        $cacheId = $this->name . '_' . get_class($this->context->controller);
+        $cacheId = $this->name . '_' . $className;
         if (!$this->isCached($this->templateFile, $this->getCacheId($cacheId))) {
             $this->smarty->assign($this->getWidgetVariables($hookName, $configuration));
         }
@@ -331,6 +368,8 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     }
 
     /**
+     * Retrieve the widget variables
+     *
      * @param string $hookName
      * @param string[] $configuration
      *
@@ -433,20 +472,23 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      * This method handles the module's configuration page
      *
      * @return string
+     * @throws Exception
      */
     public function getContent(): string
     {
+        $themeName = $this->getCurrentThemeName();
+
         $message = $this->trans(
             'For contact, login and reset password forms, you need to manually add the widget in the template files.',
             [],
             'Modules.Pixelcloudflareturnstile.Admin'
         );
-        $themeName = $this->getCurrentThemeName();
         $message .= '<br /><br />{widget name=\'pixel_cloudflare_turnstile\'}<br />';
         $message .= '<br /><strong>- Contact:</strong> themes/' . $themeName . '/modules/contactform/views/templates/widget/contactform.tpl';
         $message .= '<br /><strong>- Login:</strong> themes/' . $themeName . '/templates/customer/_partials/login-form.tpl';
         $message .= '<br /><strong>- Reset password:</strong> themes/' . $themeName . '/templates/customer/password-email.tpl';
-        $output = ('<div class="alert alert-info">' . $message . '</div>');
+
+        $output = '<div class="alert alert-info">' . $message . '</div>';
 
         if (Tools::isSubmit('submit' . $this->name)) {
             foreach ($this->getConfigFields() as $code => $field) {
@@ -530,7 +572,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     }
 
     /**
-     * Retrieve forms
+     * Retrieve available forms for turnstile
      *
      * @return string[]
      */
