@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="admin970j8tj6r" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="dec5abd2b420471d260f4de991ab385f">
+        <source>Cloudflare turnstile secret key is missing</source>
+        <target>Le paramètre "secret key" de Cloudflare turnstile est requis</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="10fd97a61b115a4e82694c0b2ec7c2ba">
+        <source>Cloudflare turnstile sitekey is missing</source>
+        <target>Le paramètre "sitekey" de Cloudflare turnstile est requis</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="abeadc047fb8a02f194e59d2fc1928f1">
+        <source>Please validate the security field.</source>
+        <target>Veuillez valider le champ de sécurité.</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="57f1c12eb45b082b0d55b42940716860">
+        <source>Security validation error:</source>
+        <target>Erreur de validation de sécurité :</target>
+        <note>Line: </note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

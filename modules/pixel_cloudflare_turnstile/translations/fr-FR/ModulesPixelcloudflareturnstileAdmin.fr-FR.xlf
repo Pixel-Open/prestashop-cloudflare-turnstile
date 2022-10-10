@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="admin970j8tj6r" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="7b1ae689f336775afa7835a9da7be645">
+        <source>Cloudflare Turnstile</source>
+        <target>Cloudflare Turnstile</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="1bc993e46a1488199fb3fa4fdbddf393">
+        <source>Protect your store from spam messages and spam user accounts.</source>
+        <target>Protégez votre boutique contre les spams et les comptes utilisateurs indésirables.</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="2a7e92788a4088908cabdcd1d6c97ff9">
+        <source>Sitekey</source>
+        <target>Sitekey</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="952bf87c967660b7bbd4e1eb08cefc92">
+        <source>Secret key</source>
+        <target>Secret key</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="d721757161f7f70c5b0949fdb6ec2c30">
+        <source>Theme</source>
+        <target>Thème</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="d6cbdfc9c5a7c896ba3964ec00e98d24">
+        <source>Forms to validate</source>
+        <target>Formulaires à protéger</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="bbaff12800505b22a853e8b7f4eb6a22">
+        <source>Contact</source>
+        <target>Contact</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="99dea78007133396a7b8ed70578ac6ae">
+        <source>Login</source>
+        <target>Connexion</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="0ba7583639a274c434bbe6ef797115a4">
+        <source>Register</source>
+        <target>Enregistrement</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="6072e83b7f35887c76e64920bd370f4a">
+        <source>Reset Password</source>
+        <target>Mot de passe oublié</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="9cb0006b49b9db05832e8e7afeb6817d">
+        <source>For contact, login and reset password forms, you need to manually add the widget in the template files.</source>
+        <target>Pour les formulaires de contact, de connexion et de réinitialisation du mot de passe, vous devez ajouter manuellement le widget dans les templates du thème.</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="e124ed6b3e0bd38844ea7e1b325bbd3e">
+        <source>%field% is empty</source>
+        <target>%field% is empty</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="c888438d14855d7d96a2724ee9c306bd">
+        <source>Settings updated</source>
+        <target>Paramètres mis à jour</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="f4f70727dc34561dfde1a3c529b6205c">
+        <source>Settings</source>
+        <target>Paramètres</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="c9cc8cce247e49bae79f15173ce97354">
+        <source>Save</source>
+        <target>Enregistrer</target>
+        <note>Line: </note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
