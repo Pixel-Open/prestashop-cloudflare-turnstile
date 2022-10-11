@@ -9,6 +9,8 @@
 - Register
 - Reset password
 
+![Cloudflare Turnstile](screenshot.png)
+
 ## Requirements
 
 - Prestashop >= 1.7.6.0
