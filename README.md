@@ -18,9 +18,15 @@
 
 ## Installation
 
-Copy the **pixel_cloudflare_turnstile** module in your prestashop **modules** directory.
+Download the **pixel_cloudflare_turnstile.zip** file from the [last release](https://github.com/Pixel-Open/prestashop-cloudflare-turnstile/releases/latest) assets.
 
-Then, install the module in the Admin module catalog.
+### Admin
+
+Go to the admin module catalog section and click **Upload a module**. Select the downloaded zip file.
+
+### Manually
+
+Move the downloaded file in the Prestashop **modules** directory and unzip the archive. Go to the admin module catalog section and search for "Cloudflare Turnstile".
 
 ## Configuration
 
