@@ -247,6 +247,9 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             return true;
         }
 
+        // Custom
+        // Add a new test here. @TODO Find a way to extend in an other module
+
         return false;
     }
 
@@ -257,7 +260,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      *
      * @return bool
      */
-    protected function isAvailable(string $form): bool
+    public function isAvailable(string $form): bool
     {
         return in_array($form, $this->getForms());
     }
@@ -359,7 +362,8 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         if (!$this->canProcess($className)) {
             return '';
         }
-        $cacheId = $this->name . '_' . $className;
+        $keys = [$this->name, $className, $this->getFormName()];
+        $cacheId = join('_', $keys);
         if (!$this->isCached($this->templateFile, $this->getCacheId($cacheId))) {
             $this->smarty->assign($this->getWidgetVariables($hookName, $configuration));
         }
@@ -380,7 +384,33 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         return [
             'sitekey' => $this->getSitekey(),
             'theme'   => $configuration['theme'] ?? $this->getTheme(),
+            'action'  => $configuration['action'] ?? $this->getFormName(),
         ];
+    }
+
+    /**
+     * Retrieve the current form name
+     *
+     * @return string
+     */
+    public function getFormName(): string
+    {
+        $controllerClass = get_class($this->context->controller);
+        switch ($controllerClass) {
+            case 'ContactController':
+                $action = self::FORM_CONTACT;
+                break;
+            case 'PasswordController':
+                $action = self::FORM_PASSWORD;
+                break;
+            case 'AuthController':
+                $action = Tools::getValue('create_account') ? self::FORM_REGISTER : self::FORM_LOGIN;
+                break;
+            default:
+                $action = strtolower(str_replace('Controller', '', $controllerClass));
+        }
+
+        return $action;
     }
 
     /*************************/
@@ -455,6 +485,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
                             'value' => self::FORM_PASSWORD,
                             'name'  => $this->trans('Reset Password', [], 'Modules.Pixelcloudflareturnstile.Admin'),
                         ],
+                        // Add a new custom form here. @TODO Find a way to extend in an other module
                     ],
                     'id'   => 'value',
                     'name' => 'name',

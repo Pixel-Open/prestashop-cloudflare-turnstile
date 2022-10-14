@@ -1,3 +1,7 @@
+## 1.0.2
+
+- Action option added
+
 ## 1.0.1
 
 - Display full error messages instead of error codes

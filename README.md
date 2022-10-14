@@ -51,6 +51,12 @@ Override the default configured theme by adding a theme option (auto, light or d
 {widget name='pixel_cloudflare_turnstile' theme='dark'}
 ```
 
+Override the default action name by adding an action option:
+
+```html
+{widget name='pixel_cloudflare_turnstile' action='my-form'}
+```
+
 ### Forms
 
 | Form           | Template                                                                      |
