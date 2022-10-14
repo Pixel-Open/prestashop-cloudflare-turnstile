@@ -1,3 +1,7 @@
+## 1.0.3
+
+- Custom or third party form validation
+
 ## 1.0.2
 
 - Action option added

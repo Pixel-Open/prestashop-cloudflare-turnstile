@@ -12,6 +12,7 @@
 - Login
 - Register
 - Reset password
+- Custom or third-party forms
 
 ![Cloudflare Turnstile](screenshot.png)
 
@@ -68,6 +69,35 @@ Override the default action name by adding an action option:
 | Contact        | themes/{themeName}/modules/contactform/views/templates/widget/contactform.tpl |
 | Login          | themes/{themeName}/templates/customer/_partials/login-form.tpl                |
 | Reset password | themes/{themeName}/templates/customer/password-email.tpl                      |
+
+### Protect a custom or third-party form
+
+1. Add the Cloudflare Turnstile widget in the Smarty form template:
+
+```html
+{widget name='pixel_cloudflare_turnstile' action='custom-form'}
+```
+
+2. In a module, add a new hook to call Turnstile validation on form post:
+
+```php
+public function install(): bool
+{
+    return parent::install() &&
+        $this->registerHook('actionFrontControllerInitBefore');
+}
+
+public function hookActionFrontControllerInitBefore(array $params): void
+{
+    $controllerClass = get_class($params['controller']);
+
+    if ($controllerClass === 'MyFormController' && Tools::isSubmit('myForm')) {
+        Pixel_cloudflare_turnstile::turnstileValidation();
+    }
+}
+```
+
+If the validation fails, the customer is redirected to the previous page with an error message.
 
 ### Testing
 
