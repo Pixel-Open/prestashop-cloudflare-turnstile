@@ -34,7 +34,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public function __construct()
     {
         $this->name = 'pixel_cloudflare_turnstile';
-        $this->version = '1.0.2';
+        $this->version = '1.0.3';
         $this->author = 'Pixel Open';
         $this->tab = 'front_office_features';
         $this->need_instance = 0;
@@ -247,9 +247,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             return true;
         }
 
-        // Custom
-        // Add a new test here. @TODO Find a way to extend in an other module
-
         return false;
     }
 
@@ -271,7 +268,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      * @return void
      * @throws Exception
      */
-    protected function turnstileValidation(): void
+    public static function turnstileValidation(): void
     {
         $referer = $_SERVER['HTTP_REFERER'] ?? 'index';
         $cookie  = Context::getContext()->cookie;
@@ -280,7 +277,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         if (!$response) {
             $cookie->__set(
                 self::TURNSTILE_SESSION_ERROR_KEY,
-                $this->trans(
+                Context::getContext()->getTranslator()->trans(
                     'Please validate the security field.',
                     [],
                     'Modules.Pixelcloudflareturnstile.Shop'
@@ -290,7 +287,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         }
 
         $data = [
-            'secret'   => $this->getSecretKey(),
+            'secret'   => Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY),
             'response' => $response,
         ];
 
@@ -307,11 +304,11 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         if (!($result['success'] ?? false)) {
             $errors = $result['error-codes'] ?? ['unavailable'];
             foreach ($errors as $key => $errorCode) {
-                $errors[$key] = $this->getErrorMessage($errorCode);
+                $errors[$key] = self::getErrorMessage($errorCode);
             }
             $cookie->__set(
                 self::TURNSTILE_SESSION_ERROR_KEY,
-                $this->trans(
+                Context::getContext()->getTranslator()->trans(
                     'Security validation error:',
                     [],
                     'Modules.Pixelcloudflareturnstile.Shop'
@@ -328,7 +325,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      *
      * @return string
      */
-    protected function getErrorMessage(string $code): string
+    protected static function getErrorMessage(string $code): string
     {
         $messages = [
             'missing-input-secret'   => 'the secret parameter was not passed.',
@@ -485,7 +482,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
                             'value' => self::FORM_PASSWORD,
                             'name'  => $this->trans('Reset Password', [], 'Modules.Pixelcloudflareturnstile.Admin'),
                         ],
-                        // Add a new custom form here. @TODO Find a way to extend in an other module
                     ],
                     'id'   => 'value',
                     'name' => 'name',
