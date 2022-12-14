@@ -34,7 +34,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public function __construct()
     {
         $this->name = 'pixel_cloudflare_turnstile';
-        $this->version = '1.0.3';
+        $this->version = '1.1.0';
         $this->author = 'Pixel Open';
         $this->tab = 'front_office_features';
         $this->need_instance = 0;
@@ -60,7 +60,9 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         $this->templateFile = 'module:' . $this->name . '/pixel_cloudflare_turnstile.tpl';
     }
 
+    /***************************/
     /** MODULE INITIALIZATION **/
+    /***************************/
 
     /**
      * Install the module
@@ -95,7 +97,9 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         return true;
     }
 
+    /***********/
     /** HOOKS **/
+    /***********/
 
     /**
      * Adds CSS and JS
@@ -108,17 +112,17 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             'cloudflare-turnstile',
             'modules/' . $this->name . '/views/css/turnstile.css',
             [
-                'position' => 'head',
-                'priority' => 100,
+                'position'   => 'head',
+                'priority'   => 100,
             ]
         );
         $this->context->controller->registerJavascript(
             'cloudflare-turnstile',
             'https://challenges.cloudflare.com/turnstile/v0/api.js',
             [
-                'server' => 'remote',
-                'position' => 'head',
-                'priority' => 100,
+                'server'     => 'remote',
+                'position'   => 'head',
+                'priority'   => 100,
                 'attributes' => 'async',
             ]
         );
@@ -137,7 +141,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         if (!$this->isAvailable(self::FORM_REGISTER)) {
             return '';
         }
-
         return $this->renderWidget('displayCustomerAccountForm', []);
     }
 
@@ -147,7 +150,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      * @param array $params
      *
      * @return void
-     *
      * @throws Exception
      */
     public function hookActionFrontControllerInitBefore(array $params): void
@@ -162,7 +164,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
                 [],
                 'Modules.Pixelcloudflareturnstile.Shop'
             );
-
             return;
         }
         if (!$this->getSitekey()) {
@@ -171,7 +172,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
                 [],
                 'Modules.Pixelcloudflareturnstile.Shop'
             );
-
             return;
         }
 
@@ -195,7 +195,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      * Check if turnstile is available for current action
      *
      * @param string $controllerClass
-     * @param bool $validate
+     * @param bool   $validate
      *
      * @return bool
      */
@@ -212,7 +212,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             if ($validate && !Tools::isSubmit('submitMessage')) {
                 return false;
             }
-
             return true;
         }
 
@@ -225,7 +224,17 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             if ($validate && !Tools::isSubmit('submitCreate')) {
                 return false;
             }
+            return true;
+        }
 
+        // Register Prestashop >= 8.0.0
+        if ($controllerClass === 'RegistrationController' &&
+            $this->isAvailable(self::FORM_REGISTER) &&
+            !$isLoggedIn
+        ) {
+            if ($validate && !Tools::isSubmit('submitCreate')) {
+                return false;
+            }
             return true;
         }
 
@@ -238,7 +247,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             if ($validate && !Tools::isSubmit('submitLogin')) {
                 return false;
             }
-
             return true;
         }
 
@@ -247,7 +255,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             if ($validate && empty($_POST)) {
                 return false;
             }
-
             return true;
         }
 
@@ -270,13 +277,12 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      * Validate turnstile
      *
      * @return void
-     *
      * @throws Exception
      */
     public static function turnstileValidation(): void
     {
         $referer = $_SERVER['HTTP_REFERER'] ?? 'index';
-        $cookie = Context::getContext()->cookie;
+        $cookie  = Context::getContext()->cookie;
 
         $response = Tools::getValue('cf-turnstile-response');
         if (!$response) {
@@ -292,7 +298,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         }
 
         $data = [
-            'secret' => Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY),
+            'secret'   => Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY),
             'response' => $response,
         ];
 
@@ -333,20 +339,22 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     protected static function getErrorMessage(string $code): string
     {
         $messages = [
-            'missing-input-secret' => 'the secret parameter was not passed.',
-            'invalid-input-secret' => 'the secret parameter was invalid or did not exist.',
+            'missing-input-secret'   => 'the secret parameter was not passed.',
+            'invalid-input-secret'   => 'the secret parameter was invalid or did not exist.',
             'missing-input-response' => 'the response parameter was not passed.',
             'invalid-input-response' => 'the response parameter is invalid or has expired.',
-            'bad-request' => 'the request was rejected because it was malformed.',
-            'timeout-or-duplicate' => 'the response parameter has already been validated before.',
-            'internal-error' => 'an internal error happened while validating the response. The request can be retried.',
-            'unavailable' => 'unable to contact Cloudflare to validate the form',
+            'bad-request'            => 'the request was rejected because it was malformed.',
+            'timeout-or-duplicate'   => 'the response parameter has already been validated before.',
+            'internal-error'         => 'an internal error happened while validating the response. The request can be retried.',
+            'unavailable'            => 'unable to contact Cloudflare to validate the form',
         ];
 
         return $messages[$code] ?? 'unknown error';
     }
 
+    /*********************/
     /** FRONTEND WIDGET **/
+    /*********************/
 
     /**
      * Render the turnstile widget
@@ -383,8 +391,8 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     {
         return [
             'sitekey' => $this->getSitekey(),
-            'theme' => $configuration['theme'] ?? $this->getTheme(),
-            'action' => $configuration['action'] ?? $this->getFormName(),
+            'theme'   => $configuration['theme'] ?? $this->getTheme(),
+            'action'  => $configuration['action'] ?? $this->getFormName(),
         ];
     }
 
@@ -413,7 +421,9 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         return $action;
     }
 
+    /*************************/
     /** ADMIN CONFIGURATION **/
+    /*************************/
 
     /**
      * Retrieve config fields
@@ -424,67 +434,67 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     {
         return [
             self::CONFIG_CLOUDFLARE_TURNSTILE_SITEKEY => [
-                'type' => 'text',
-                'label' => $this->trans('Sitekey', [], 'Modules.Pixelcloudflareturnstile.Admin'),
-                'name' => self::CONFIG_CLOUDFLARE_TURNSTILE_SITEKEY,
+                'type'     => 'text',
+                'label'    => $this->trans('Sitekey', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                'name'     => self::CONFIG_CLOUDFLARE_TURNSTILE_SITEKEY,
                 'required' => true,
             ],
             self::CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY => [
-                'type' => 'text',
-                'label' => $this->trans('Secret key', [], 'Modules.Pixelcloudflareturnstile.Admin'),
-                'name' => self::CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY,
+                'type'     => 'text',
+                'label'    => $this->trans('Secret key', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                'name'     => self::CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY,
                 'required' => true,
             ],
             self::CONFIG_CLOUDFLARE_TURNSTILE_THEME => [
-                'type' => 'select',
-                'label' => $this->trans('Theme', [], 'Modules.Pixelcloudflareturnstile.Admin'),
-                'name' => self::CONFIG_CLOUDFLARE_TURNSTILE_THEME,
+                'type'     => 'select',
+                'label'    => $this->trans('Theme', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                'name'     => self::CONFIG_CLOUDFLARE_TURNSTILE_THEME,
                 'required' => true,
                 'options' => [
                     'query' => [
                         [
                             'value' => 'auto',
-                            'name' => 'Auto',
+                            'name'  => 'Auto',
                         ],
                         [
                             'value' => 'light',
-                            'name' => 'Light',
+                            'name'  => 'Light',
                         ],
                         [
                             'value' => 'dark',
-                            'name' => 'Dark',
+                            'name'  => 'Dark',
                         ],
                     ],
-                    'id' => 'value',
+                    'id'   => 'value',
                     'name' => 'name',
                 ],
             ],
             self::CONFIG_CLOUDFLARE_TURNSTILE_FORMS => [
-                'type' => 'select',
+                'type'     => 'select',
                 'multiple' => true,
-                'label' => $this->trans('Forms to validate', [], 'Modules.Pixelcloudflareturnstile.Admin'),
-                'name' => self::CONFIG_CLOUDFLARE_TURNSTILE_FORMS . '[]',
+                'label'    => $this->trans('Forms to validate', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                'name'     => self::CONFIG_CLOUDFLARE_TURNSTILE_FORMS . '[]',
                 'required' => false,
                 'options' => [
                     'query' => [
                         [
                             'value' => self::FORM_CONTACT,
-                            'name' => $this->trans('Contact', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                            'name'  => $this->trans('Contact', [], 'Modules.Pixelcloudflareturnstile.Admin'),
                         ],
                         [
                             'value' => self::FORM_LOGIN,
-                            'name' => $this->trans('Login', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                            'name'  => $this->trans('Login', [], 'Modules.Pixelcloudflareturnstile.Admin'),
                         ],
                         [
                             'value' => self::FORM_REGISTER,
-                            'name' => $this->trans('Register', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                            'name'  => $this->trans('Register', [], 'Modules.Pixelcloudflareturnstile.Admin'),
                         ],
                         [
                             'value' => self::FORM_PASSWORD,
-                            'name' => $this->trans('Reset Password', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                            'name'  => $this->trans('Reset Password', [], 'Modules.Pixelcloudflareturnstile.Admin'),
                         ],
                     ],
-                    'id' => 'value',
+                    'id'   => 'value',
                     'name' => 'name',
                 ],
                 'desc' => $this->trans(
@@ -500,7 +510,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      * This method handles the module's configuration page
      *
      * @return string
-     *
      * @throws Exception
      */
     public function getContent(): string
@@ -549,7 +558,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      * Retrieve current theme name
      *
      * @return string
-     *
      * @throws Exception
      */
     public function getCurrentThemeName(): string

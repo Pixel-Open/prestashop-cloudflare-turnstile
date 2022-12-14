@@ -1,3 +1,7 @@
+## 1.1.0
+
+- Prestashop 8.0.0 compatibility
+
 ## 1.0.3
 
 - Custom or third party form validation
