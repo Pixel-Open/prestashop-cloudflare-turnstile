@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Fix renew password form turnstile error
+
 ## 1.1.0
 
 - Prestashop 8.0.0 compatibility

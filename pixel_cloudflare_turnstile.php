@@ -34,7 +34,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public function __construct()
     {
         $this->name = 'pixel_cloudflare_turnstile';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'Pixel Open';
         $this->tab = 'front_office_features';
         $this->need_instance = 0;
@@ -252,7 +252,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
 
         // Reset Password
         if ($controllerClass === 'PasswordController' && $this->isAvailable(self::FORM_PASSWORD)) {
-            if ($validate && empty($_POST)) {
+            if ($validate && (empty($_POST) || (isset($_POST['token'], $_POST['id_customer']) && !isset($_POST['email'])))) {
                 return false;
             }
             return true;
