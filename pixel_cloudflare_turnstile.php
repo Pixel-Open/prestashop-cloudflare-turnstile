@@ -562,7 +562,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      */
     public function getCurrentThemeName(): string
     {
-        return rtrim(Context::getContext()->shop->theme->getDirectory(), '/');
+        return basename(Context::getContext()->shop->theme->getName());
     }
 
     /**
