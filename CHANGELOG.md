@@ -1,3 +1,9 @@
+# Changelog
+
+## 1.1.2
+
+- Fix current theme directory retrieval ([@jf-viguier](https://github.com/jf-viguier))
+
 ## 1.1.1
 
 - Fix renew password form turnstile error
