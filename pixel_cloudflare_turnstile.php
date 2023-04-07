@@ -562,10 +562,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      */
     public function getCurrentThemeName(): string
     {
-        /** @var ThemeProviderInterface $themeProvider */
-        $themeProvider = $this->get('prestashop.core.addon.theme.theme_provider');
-
-        return $themeProvider ? $themeProvider->getCurrentlyUsedTheme()->getName() : '{themeName}';
+        return rtrim(Context::getContext()->shop->theme->getDirectory(), '/');
     }
 
     /**
