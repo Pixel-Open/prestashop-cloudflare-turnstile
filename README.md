@@ -44,62 +44,47 @@ For the registration form, the widget is automatically added with a hook. For "c
 
 **Never select a form to validate without the widget in the form template.**
 
-### Widget
+## Widget
 
-```html
-{widget name='pixel_cloudflare_turnstile'}
+For contact, login and reset password forms, you need to manually add the widget in the template files.
+
+### Contact
+
+**Template**:
+
+themes/{themeName}/modules/contactform/views/templates/widget/contactform.tpl
+
+**Widget**:
+
+```smarty
+{widget name='pixel_cloudflare_turnstile' form='contact'}
 ```
 
-Override the default configured theme by adding a theme option (auto, light or dark):
+### Login
 
-```html
-{widget name='pixel_cloudflare_turnstile' theme='dark'}
+**Template**:
+
+themes/{themeName}/templates/customer/_partials/login-form.tpl
+
+**Widget**:
+
+```smarty
+{widget name='pixel_cloudflare_turnstile' form='login'}
 ```
 
-Override the default action name by adding an action option:
+### Reset password
 
-```html
-{widget name='pixel_cloudflare_turnstile' action='my-form'}
+**Template**:
+
+themes/{themeName}/templates/customer/password-email.tpl
+
+**Widget**:
+
+```smarty
+{widget name='pixel_cloudflare_turnstile' form='password'}
 ```
 
-### Forms
-
-| Form           | Template                                                                      |
-|----------------|-------------------------------------------------------------------------------|
-| Contact        | themes/{themeName}/modules/contactform/views/templates/widget/contactform.tpl |
-| Login          | themes/{themeName}/templates/customer/_partials/login-form.tpl                |
-| Reset password | themes/{themeName}/templates/customer/password-email.tpl                      |
-
-### Protect a custom or third-party form
-
-1. Add the Cloudflare Turnstile widget in the Smarty form template:
-
-```html
-{widget name='pixel_cloudflare_turnstile' action='custom-form'}
-```
-
-2. In a module, add a new hook to call Turnstile validation on form post:
-
-```php
-public function install(): bool
-{
-    return parent::install() &&
-        $this->registerHook('actionFrontControllerInitBefore');
-}
-
-public function hookActionFrontControllerInitBefore(array $params): void
-{
-    $controllerClass = get_class($params['controller']);
-
-    if ($controllerClass === 'MyFormController' && Tools::isSubmit('myForm')) {
-        Pixel_cloudflare_turnstile::turnstileValidation();
-    }
-}
-```
-
-If the validation fails, the customer is redirected to the previous page with an error message.
-
-### Testing
+## Testing
 
 Use the following sitekeys and secret keys for testing purposes:
 

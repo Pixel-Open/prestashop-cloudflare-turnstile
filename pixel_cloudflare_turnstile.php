@@ -519,14 +519,14 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             'Modules.Pixelcloudflareturnstile.Admin'
         );
 
-        $message .= '<br /><strong>- Contact:</strong> themes/' . $themeName . '/modules/contactform/views/templates/widget/contactform.tpl';
-        $message .= '<br />{widget name=\'pixel_cloudflare_turnstile\' form=\'' . self::FORM_CONTACT . '\'}<br />';
-        $message .= '<br /><strong>- Login:</strong> themes/' . $themeName . '/templates/customer/_partials/login-form.tpl';
-        $message .= '<br />{widget name=\'pixel_cloudflare_turnstile\' form=\'' . self::FORM_LOGIN . '\'}<br />';
-        $message .= '<br /><strong>- Reset password:</strong> themes/' . $themeName . '/templates/customer/password-email.tpl';
-        $message .= '<br />{widget name=\'pixel_cloudflare_turnstile\' form=\'' . self::FORM_PASSWORD. '\'}';
+        $message .= '<br /><br /><strong>Contact:</strong><br /> themes/' . $themeName . '/modules/contactform/views/templates/widget/contactform.tpl';
+        $message .= '<br /><code>{widget name=\'pixel_cloudflare_turnstile\' form=\'' . self::FORM_CONTACT . '\'}</code><br />';
+        $message .= '<br /><strong>Login:</strong><br /> themes/' . $themeName . '/templates/customer/_partials/login-form.tpl';
+        $message .= '<br /><code>{widget name=\'pixel_cloudflare_turnstile\' form=\'' . self::FORM_LOGIN . '\'}</code><br />';
+        $message .= '<br /><strong>Reset password:</strong><br /> themes/' . $themeName . '/templates/customer/password-email.tpl';
+        $message .= '<br /><code>{widget name=\'pixel_cloudflare_turnstile\' form=\'' . self::FORM_PASSWORD. '\'}</code>';
 
-        $output = '<div class="alert alert-info">' . $message . '</div>';
+        $output = '<div class="alert alert-info" style="line-height:22px">' . $message . '</div>';
 
         if (Tools::isSubmit('submit' . $this->name)) {
             foreach ($this->getConfigFields() as $code => $field) {
