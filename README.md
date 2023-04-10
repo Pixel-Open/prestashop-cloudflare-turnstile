@@ -12,7 +12,6 @@
 - Login
 - Register
 - Reset password
-- Custom or third-party forms
 
 ![Cloudflare Turnstile](screenshot.png)
 
