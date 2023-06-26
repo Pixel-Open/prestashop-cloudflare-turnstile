@@ -75,8 +75,10 @@ Override the default action name by adding an action option:
 1. Add the Cloudflare Turnstile widget in the Smarty form template:
 
 ```html
-{widget name='pixel_cloudflare_turnstile' action='custom-form'}
+{widget name='pixel_cloudflare_turnstile' custom='1' action='custom-form'}
 ```
+
+**Note:** The action param is a free name that will appear in the Turnstile statistics
 
 2. In a module, add a new hook to call Turnstile validation on form post:
 

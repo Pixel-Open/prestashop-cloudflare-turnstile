@@ -34,7 +34,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public function __construct()
     {
         $this->name = 'pixel_cloudflare_turnstile';
-        $this->version = '1.1.2';
+        $this->version = '1.1.3';
         $this->author = 'Pixel Open';
         $this->tab = 'front_office_features';
         $this->need_instance = 0;
@@ -367,7 +367,8 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public function renderWidget($hookName, array $configuration): string
     {
         $className = get_class($this->context->controller);
-        if (!$this->canProcess($className)) {
+        $isCustom = (int)($configuration['custom'] ?? 0) === 1;
+        if (!$isCustom && !$this->canProcess($className)) {
             return '';
         }
         $keys = [$this->name, $className, $this->getFormName()];
