@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3
+
+- Fixed widget not showing on third party form
+
 ## 1.1.2
 
 - Fix current theme directory retrieval ([@jf-viguier](https://github.com/jf-viguier))
