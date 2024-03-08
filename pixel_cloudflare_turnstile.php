@@ -203,9 +203,6 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      */
     public function hookDisplayNewsletterRegistration($params)
     {
-        if ($this->context->customer->isLogged()) {
-            return '';
-        }
         if (!$this->isAvailable(self::FORM_NEWSLETTER)) {
             return '';
         }
