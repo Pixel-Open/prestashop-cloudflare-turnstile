@@ -463,10 +463,11 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      */
     public function getWidgetVariables($hookName, array $configuration): array
     {
+        $action = $configuration['action'] ?? $this->getFormName();
         return [
             'sitekey' => $this->getSitekey(),
             'theme'   => $configuration['theme'] ?? $this->getTheme(),
-            'action'  => $configuration['action'] ?? $this->getFormName(),
+            'action'  => substr($action, 0, 32), // This can only contain up to 32 alphanumeric characters including _ and -
         ];
     }
 
