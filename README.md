@@ -12,6 +12,7 @@
 - Login
 - Register
 - Reset password
+- Newsletter subscription
 - Custom or third-party forms
 
 ![Cloudflare Turnstile](screenshot.png)

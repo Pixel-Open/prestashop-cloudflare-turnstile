@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.4
+
+- Add newsletter registration form ([@jf-viguier](https://github.com/jf-viguier))
+
 ## 1.1.3
 
 - Fixed widget not showing on third party form
