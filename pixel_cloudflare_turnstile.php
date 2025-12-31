@@ -21,6 +21,30 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public const CONFIG_CLOUDFLARE_TURNSTILE_THEME = 'CLOUDFLARE_TURNSTILE_THEME';
     public const CONFIG_CLOUDFLARE_TURNSTILE_FORMS = 'CLOUDFLARE_TURNSTILE_FORMS';
     public const CONFIG_CLOUDFLARE_TURNSTILE_APPEARANCE = 'CLOUDFLARE_TURNSTILE_APPEARANCE';
+    public const CONFIG_CLOUDFLARE_TURNSTILE_TEST_MODE = 'CLOUDFLARE_TURNSTILE_TEST_MODE';
+
+    public const TEST_MODE_DISABLED = 'disabled';
+    public const TEST_MODE_PASS = 'pass';
+    public const TEST_MODE_FAIL = 'fail';
+    public const TEST_MODE_INTERACTIVE = 'interactive';
+
+    protected const TEST_KEYS = [
+        self::TEST_MODE_PASS => [
+            'sitekey_visible'   => '1x00000000000000000000AA',
+            'sitekey_invisible' => '1x00000000000000000000BB',
+            'secret'            => '1x0000000000000000000000000000000AA',
+        ],
+        self::TEST_MODE_FAIL => [
+            'sitekey_visible'   => '2x00000000000000000000AB',
+            'sitekey_invisible' => '2x00000000000000000000BB',
+            'secret'            => '2x0000000000000000000000000000000AA',
+        ],
+        self::TEST_MODE_INTERACTIVE => [
+            'sitekey_visible'   => '3x00000000000000000000FF',
+            'sitekey_invisible' => '3x00000000000000000000FF',
+            'secret'            => '1x0000000000000000000000000000000AA',
+        ],
+    ];
 
     public const FORM_CONTACT = 'contact';
     public const FORM_LOGIN = 'login';
@@ -38,7 +62,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public function __construct()
     {
         $this->name = 'pixel_cloudflare_turnstile';
-        $this->version = '1.1.5';
+        $this->version = '1.1.6';
         $this->author = 'Pixel Open';
         $this->tab = 'front_office_features';
         $this->need_instance = 0;
@@ -363,7 +387,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         }
 
         $data = [
-            'secret'   => Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY),
+            'secret'   => self::getSecretKeyStatic(),
             'response' => $response,
         ];
 
@@ -570,6 +594,39 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
                     'name' => 'name',
                 ],
             ],
+            self::CONFIG_CLOUDFLARE_TURNSTILE_TEST_MODE => [
+                'type'     => 'select',
+                'label'    => $this->trans('Test mode', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                'name'     => self::CONFIG_CLOUDFLARE_TURNSTILE_TEST_MODE,
+                'required' => false,
+                'options' => [
+                    'query' => [
+                        [
+                            'value' => self::TEST_MODE_DISABLED,
+                            'name'  => $this->trans('Disabled (production)', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                        ],
+                        [
+                            'value' => self::TEST_MODE_PASS,
+                            'name'  => $this->trans('Always passes', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                        ],
+                        [
+                            'value' => self::TEST_MODE_FAIL,
+                            'name'  => $this->trans('Always fails', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                        ],
+                        [
+                            'value' => self::TEST_MODE_INTERACTIVE,
+                            'name'  => $this->trans('Force interactive challenge', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                        ],
+                    ],
+                    'id'   => 'value',
+                    'name' => 'name',
+                ],
+                'desc' => $this->trans(
+                    'Use Cloudflare test keys instead of real keys',
+                    [],
+                    'Modules.Pixelcloudflareturnstile.Admin'
+                ),
+            ],
             self::CONFIG_CLOUDFLARE_TURNSTILE_FORMS => [
                 'type'     => 'select',
                 'multiple' => true,
@@ -747,12 +804,36 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     }
 
     /**
+     * Retrieve the test mode
+     *
+     * @return string
+     */
+    public function getTestMode(): string
+    {
+        return Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_TEST_MODE) ?: self::TEST_MODE_DISABLED;
+    }
+
+    /**
      * Retrieve the secret key
      *
      * @return string|null
      */
     protected function getSecretKey(): ?string
     {
+        return self::getSecretKeyStatic();
+    }
+
+    /**
+     * Retrieve the secret key (static version for validation)
+     *
+     * @return string|null
+     */
+    protected static function getSecretKeyStatic(): ?string
+    {
+        $testMode = Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_TEST_MODE) ?: self::TEST_MODE_DISABLED;
+        if ($testMode !== self::TEST_MODE_DISABLED) {
+            return self::TEST_KEYS[$testMode]['secret'];
+        }
         return Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY) ?: null;
     }
 
@@ -763,6 +844,11 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
      */
     protected function getSitekey(): ?string
     {
+        $testMode = $this->getTestMode();
+        if ($testMode !== self::TEST_MODE_DISABLED) {
+            $keyType = $this->getAppearance() === 'interaction-only' ? 'sitekey_invisible' : 'sitekey_visible';
+            return self::TEST_KEYS[$testMode][$keyType];
+        }
         return Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_SITEKEY) ?: null;
     }
 

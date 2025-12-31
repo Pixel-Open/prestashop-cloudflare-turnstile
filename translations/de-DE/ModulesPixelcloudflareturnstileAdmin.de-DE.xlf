@@ -102,6 +102,36 @@
         <target>Newsletter</target>
         <note>Line: </note>
       </trans-unit>
+      <trans-unit id="test_mode_label">
+        <source>Test mode</source>
+        <target>Testmodus</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="test_mode_disabled">
+        <source>Disabled (production)</source>
+        <target>Deaktiviert (Produktion)</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="test_mode_pass">
+        <source>Always passes</source>
+        <target>Immer erfolgreich</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="test_mode_fail">
+        <source>Always fails</source>
+        <target>Immer fehlgeschlagen</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="test_mode_interactive">
+        <source>Force interactive challenge</source>
+        <target>Interaktive Prüfung erzwingen</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="test_mode_desc">
+        <source>Use Cloudflare test keys instead of real keys</source>
+        <target>Cloudflare-Testschlüssel anstelle von echten Schlüsseln verwenden</target>
+        <note>Line: </note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

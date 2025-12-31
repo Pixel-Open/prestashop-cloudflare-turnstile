@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.6
+
+- Add test mode option (disabled, always passes, always fails, force interactive)
+
 ## 1.1.5
 
 - Add appearance mode option (always, execute, interaction-only/invisible)
