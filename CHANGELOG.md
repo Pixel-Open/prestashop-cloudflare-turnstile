@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.5
+
+- Add appearance mode option (always, execute, interaction-only/invisible)
+- Add German, Spanish and Italian translations
+
 ## 1.1.4
 
 - Add newsletter registration form ([@jf-viguier](https://github.com/jf-viguier))

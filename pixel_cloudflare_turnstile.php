@@ -20,6 +20,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public const CONFIG_CLOUDFLARE_TURNSTILE_SECRET_KEY = 'CLOUDFLARE_TURNSTILE_SECRET_KEY';
     public const CONFIG_CLOUDFLARE_TURNSTILE_THEME = 'CLOUDFLARE_TURNSTILE_THEME';
     public const CONFIG_CLOUDFLARE_TURNSTILE_FORMS = 'CLOUDFLARE_TURNSTILE_FORMS';
+    public const CONFIG_CLOUDFLARE_TURNSTILE_APPEARANCE = 'CLOUDFLARE_TURNSTILE_APPEARANCE';
 
     public const FORM_CONTACT = 'contact';
     public const FORM_LOGIN = 'login';
@@ -37,7 +38,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public function __construct()
     {
         $this->name = 'pixel_cloudflare_turnstile';
-        $this->version = '1.1.4';
+        $this->version = '1.1.5';
         $this->author = 'Pixel Open';
         $this->tab = 'front_office_features';
         $this->need_instance = 0;
@@ -465,9 +466,10 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     {
         $action = $configuration['action'] ?? $this->getFormName();
         return [
-            'sitekey' => $this->getSitekey(),
-            'theme'   => $configuration['theme'] ?? $this->getTheme(),
-            'action'  => substr($action, 0, 32), // This can only contain up to 32 alphanumeric characters including _ and -
+            'sitekey'    => $this->getSitekey(),
+            'theme'      => $configuration['theme'] ?? $this->getTheme(),
+            'appearance' => $configuration['appearance'] ?? $this->getAppearance(),
+            'action'     => substr($action, 0, 32), // This can only contain up to 32 alphanumeric characters including _ and -
         ];
     }
 
@@ -538,6 +540,30 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
                         [
                             'value' => 'dark',
                             'name'  => 'Dark',
+                        ],
+                    ],
+                    'id'   => 'value',
+                    'name' => 'name',
+                ],
+            ],
+            self::CONFIG_CLOUDFLARE_TURNSTILE_APPEARANCE => [
+                'type'     => 'select',
+                'label'    => $this->trans('Appearance', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                'name'     => self::CONFIG_CLOUDFLARE_TURNSTILE_APPEARANCE,
+                'required' => true,
+                'options' => [
+                    'query' => [
+                        [
+                            'value' => 'always',
+                            'name'  => $this->trans('Always visible', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                        ],
+                        [
+                            'value' => 'execute',
+                            'name'  => $this->trans('Execute', [], 'Modules.Pixelcloudflareturnstile.Admin'),
+                        ],
+                        [
+                            'value' => 'interaction-only',
+                            'name'  => $this->trans('Interaction only (invisible)', [], 'Modules.Pixelcloudflareturnstile.Admin'),
                         ],
                     ],
                     'id'   => 'value',
@@ -708,6 +734,16 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
     public function getTheme(): string
     {
         return Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_THEME) ?: 'auto';
+    }
+
+    /**
+     * Retrieve the appearance mode
+     *
+     * @return string
+     */
+    public function getAppearance(): string
+    {
+        return Configuration::get(self::CONFIG_CLOUDFLARE_TURNSTILE_APPEARANCE) ?: 'always';
     }
 
     /**
