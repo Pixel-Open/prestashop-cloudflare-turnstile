@@ -104,20 +104,13 @@ If the validation fails, the customer is redirected to the previous page with an
 
 ### Testing
 
-Use the following sitekeys and secret keys for testing purposes:
+Use the **Test mode** option in the module configuration to test without real Cloudflare keys:
 
-**Sitekey**
+| Mode                       | Description                                      |
+|----------------------------|--------------------------------------------------|
+| Disabled (production)      | Uses your real Cloudflare keys                   |
+| Always passes              | Widget always validates successfully             |
+| Always fails               | Widget always fails validation                   |
+| Force interactive challenge| Forces the user to complete an interactive check |
 
-| Sitekey                  | Description                     |
-|--------------------------|---------------------------------|
-| 1x00000000000000000000AA | Always passes                   |
-| 2x00000000000000000000AB | Always blocks                   |
-| 3x00000000000000000000FF | Forces an interactive challenge |
-
-**Secret key**
-
-| Secret key                          | Description                          |
-|-------------------------------------|--------------------------------------|
-| 1x0000000000000000000000000000000AA | Always passes                        |
-| 2x0000000000000000000000000000000AA | Always fails                         |
-| 3x0000000000000000000000000000000AA | Yields a "token already spent" error |
+This automatically uses Cloudflare's official test keys, so you don't need to manually change your sitekey and secret key.
