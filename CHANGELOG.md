@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.7
+
+- Fix module config redirect URL for Nginx compatibility
+
 ## 1.1.6
 
 - Add test mode option (disabled, always passes, always fails, force interactive)
