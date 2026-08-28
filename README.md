@@ -1,7 +1,7 @@
 # Prestashop Cloudflare Turnstile
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-green)](https://php.net/)
-[![Minimum Prestashop Version](https://img.shields.io/badge/prestashop-%3E%3D%201.7.6.0-green)](https://www.prestashop.com)
+[![Minimum Prestashop Version](https://img.shields.io/badge/prestashop-%3E%3D%201.7.7.0-green)](https://www.prestashop.com)
 [![GitHub release](https://img.shields.io/github/v/release/Pixel-Open/prestashop-cloudflare-turnstile)](https://github.com/Pixel-Open/prestashop-cloudflare-turnstile/releases)
 
 ## Presentation
@@ -19,7 +19,7 @@
 
 ## Requirements
 
-- Prestashop >= 1.7.6.0
+- Prestashop >= 1.7.7.0
 - PHP >= 7.2.0
 
 ## Installation
