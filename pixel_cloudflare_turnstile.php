@@ -321,7 +321,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
 
         // Reset Password
         if ($controllerClass === 'PasswordController' && $this->isAvailable(self::FORM_PASSWORD)) {
-            if ($validate && (empty($_POST) || (isset($_POST['token'], $_POST['id_customer']) && !isset($_POST['email'])))) {
+            if ($validate && !Tools::isSubmit('email')) {
                 return false;
             }
             return true;
