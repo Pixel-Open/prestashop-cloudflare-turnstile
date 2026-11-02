@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Validate every configuration field before saving; reject invalid selection values and malformed input.
+- Report failed configuration writes without a success message and explain partial persistence.
+- Require POST and module configure permission for settings writes; use the native configure URL.
+- Keep malformed submissions renderable, show the module version, and add isolated settings regressions.
+
 ## 1.1.7
 
 - Fix module config redirect URL for Nginx compatibility
