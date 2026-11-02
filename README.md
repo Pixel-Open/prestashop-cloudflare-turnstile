@@ -114,3 +114,24 @@ Use the **Test mode** option in the module configuration to test without real Cl
 | Force interactive challenge| Forces the user to complete an interactive check |
 
 This automatically uses Cloudflare's official test keys, so you don't need to manually change your sitekey and secret key.
+
+## Configuration regression tests
+
+Run `php tests/settings.php` from this repository. The isolated tests exercise
+validation, failed writes, POST/configure-permission guards and URL generation
+with in-memory framework doubles; they do not load a shop or contact Cloudflare.
+An optional first argument selects another module PHP file for baseline checks.
+
+The settings changes preserve the existing platform requirements. The suite was
+run on PHP 8.5.12, and the configuration form was rendered in a PrestaShop 9.2.0
+CLI component context. Native authenticated HTTP saves, installation/upgrades,
+real Cloudflare challenges and browser/accessibility checks remain separate
+integration checks. A failed storage operation can leave earlier fields saved;
+the error explicitly instructs the administrator to reload before retrying.
+
+### MCP integration assessment
+
+These settings corrections introduce no new agent operation. Existing shop
+module administration and Cloudflare's own management interfaces remain the
+appropriate surfaces; this contribution does not add a module-specific MCP
+endpoint or expose configured keys. No MCP transport qualification is claimed.
