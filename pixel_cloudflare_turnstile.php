@@ -81,7 +81,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
             'Modules.Pixelcloudflareturnstile.Admin'
         );
         $this->ps_versions_compliancy = [
-            'min' => '1.7.6.0',
+            'min' => '1.7.7.0',
             'max' => _PS_VERSION_,
         ];
 
