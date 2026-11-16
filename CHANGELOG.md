@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.8
+
+- Fix reset password form redirecting to home on multistore ([@Chrisi1321](https://github.com/Chrisi1321))
+
 ## 1.1.7
 
 - Fix module config redirect URL for Nginx compatibility
