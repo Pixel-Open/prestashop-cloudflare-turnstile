@@ -691,71 +691,25 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         $output = '<div class="alert alert-info">' . $message . '</div>';
 
         if (Tools::isSubmit('submit' . $this->name)) {
-            if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || !$this->getPermission('configure')) {
-                return $this->displayError(
-                    $this->trans('You cannot save these settings.', [], 'Modules.Pixelcloudflareturnstile.Admin')
-                ) . $this->displayForm();
-            }
-
-            // Validate every field before changing any stored configuration.
-            $values = [];
             foreach ($this->getConfigFields() as $code => $field) {
                 $value = Tools::getValue($code);
-                $multiple = ($field['multiple'] ?? false) === true;
-                $allowed = isset($field['options']) ? array_column($field['options']['query'], 'value') : [];
-                if ($multiple && $value === false) {
-                    $value = [];
-                } elseif ($code === self::CONFIG_CLOUDFLARE_TURNSTILE_TEST_MODE && $value === false) {
-                    $value = self::TEST_MODE_DISABLED;
-                }
-
-                $valid = true;
-                if ($multiple) {
-                    $valid = is_array($value);
-                    if ($valid) {
-                        foreach ($value as $selection) {
-                            if (!is_string($selection) || !in_array($selection, $allowed, true)) {
-                                $valid = false;
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    $valid = is_string($value);
-                    if ($valid && $field['required'] && trim($value) === '') {
-                        $valid = false;
-                    }
-                    if ($valid && $allowed && !in_array($value, $allowed, true)) {
-                        $valid = false;
-                    }
-                }
-
-                if (!$valid) {
+                if ($field['required'] && empty($value)) {
                     return $this->displayError(
-                        $this->trans(
-                            '%field% is invalid',
-                            ['%field%' => $field['label']],
-                            'Modules.Pixelcloudflareturnstile.Admin'
-                        )
-                    ) . $this->displayForm();
+                            $this->trans(
+                                '%field% is empty',
+                                ['%field%' => $field['label']],
+                                'Modules.Pixelcloudflareturnstile.Admin'
+                            )
+                        ) . $this->displayForm();
                 }
-                $values[$code] = $multiple ? join(',', $value) : $value;
             }
+            foreach ($this->getConfigFields() as $code => $field) {
+                $value = Tools::getValue($code);
 
-            try {
-                foreach ($values as $code => $value) {
-                    if (!Configuration::updateValue($code, $value)) {
-                        throw new \RuntimeException('Configuration update failed');
-                    }
+                if ($value && ($field['multiple'] ?? false) === true) {
+                    $value = join(',', $value);
                 }
-            } catch (\Throwable $error) {
-                return $this->displayError(
-                    $this->trans(
-                        'Some settings could not be saved. Reload this page to check the stored values before retrying.',
-                        [],
-                        'Modules.Pixelcloudflareturnstile.Admin'
-                    )
-                ) . $this->displayForm();
+                Configuration::updateValue($code, $value);
             }
 
             $output .= $this->displayConfirmation(
@@ -787,7 +741,7 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         $form = [
             'form' => [
                 'legend' => [
-                    'title' => $this->trans('Settings', [], 'Modules.Pixelcloudflareturnstile.Admin') . ' (' . $this->version . ')',
+                    'title' => $this->trans('Settings', [], 'Modules.Pixelcloudflareturnstile.Admin'),
                 ],
                 'input' => $this->getConfigFields(),
                 'submit' => [
@@ -802,20 +756,15 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
         $helper->table = $this->table;
         $helper->name_controller = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false, [], ['configure' => $this->name]);
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name;
         $helper->submit_action = 'submit' . $this->name;
 
         $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
 
         foreach ($this->getConfigFields() as $code => $field) {
             $value = Tools::getValue($code, Configuration::get($code));
-            if (($field['multiple'] ?? false) === true) {
-                if (!is_array($value)) {
-                    $value = is_string($value) && $value !== '' ? explode(',', $value) : [];
-                }
-                $value = array_values(array_filter($value, 'is_string'));
-            } elseif (!is_string($value)) {
-                $value = '';
+            if (!is_array($value) && ($field['multiple'] ?? false) === true) {
+                $value = explode(',', $value);
             }
             $helper->fields_value[$field['name']] = $value;
         }
