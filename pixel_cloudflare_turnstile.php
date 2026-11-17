@@ -702,6 +702,10 @@ class Pixel_cloudflare_turnstile extends Module implements WidgetInterface
                             )
                         ) . $this->displayForm();
                 }
+            }
+            foreach ($this->getConfigFields() as $code => $field) {
+                $value = Tools::getValue($code);
+
                 if ($value && ($field['multiple'] ?? false) === true) {
                     $value = join(',', $value);
                 }
